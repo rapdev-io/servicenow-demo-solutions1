@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: rapdev-demo-prod-1
-  namespace: workshop
+  namespace: demo
   labels:
       env: prod
       service: rapdev-demo
