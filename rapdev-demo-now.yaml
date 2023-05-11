@@ -1,0 +1,23 @@
+business_applications:
+  - name: RapDevBot #mandatory
+  - name: RapDev.io
+
+microservice:
+  name: rapdev-demo #mandatory 
+  owned_by:
+    name: Jon Giara
+    email: jon@rapdev.io
+  support_group: Database #mandatory
+  application_services: #list out all of the environments for the microservice
+    - environment: Prod #mandatory
+      tags: #list out all of the key/value pairs that the resources for this deployed microservice are tagged with
+        service: rapdev-demo
+        env: prod
+    - environment: Test
+      tags:
+        service: rapdev-demo
+        env: test
+    - environment: Dev
+      tags:
+        service: rapdev-demo
+        env: dev
