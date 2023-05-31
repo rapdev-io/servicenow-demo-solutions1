@@ -1,6 +1,6 @@
 business_applications:
   - name: RapDevBot #mandatory       
-  - name: RapDev.io #new comment 2      new comment. 
+  - name: RapDev.io
 
 microservice:
   name: rapdev-demo #mandatory 
