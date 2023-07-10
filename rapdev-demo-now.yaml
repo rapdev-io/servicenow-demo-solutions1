@@ -3,7 +3,7 @@ business_applications:
   - name: RapDev.io
 
 microservice:
-  name: rapdev-demo #mandatory  
+  name: rapdev-demo #mandatory   
   owned_by:
     name: Jon Giara
     email: jon@rapdev.io
