@@ -7,7 +7,7 @@ microservice:
   owned_by:
     name: Jon Giara
     email: jon@rapdev.io
-  support_group: Database #mandatory
+  support_group: CAB Approval #mandatory
   application_services: #list out all of the environments for the microservice
     - environment: Prod #mandatory
       tags: #list out all of the key/value pairs that the resources for this deployed microservice are tagged with
