@@ -1,0 +1,86 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+      
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4.5.0
+        with:
+          java-version: 17
+          distribution: oracle
+
+      - name: Compile
+        run: mvn compile -Drevision=1.${{ github.run_number }}.0
+
+      - name: SN Register Artifact
+        uses: ServiceNow/servicenow-devops-register-artifact@v5.1.0
+        with:
+          devops-integration-token: ${{ secrets.SN_TOKEN }}
+          instance-url: ${{ secrets.SN_URL }}
+          tool-id: ${{ secrets.SN_TOOL_ID }}
+          context-github: ${{ toJSON(github) }}
+          job-name: ${{ github.job }}
+          artifacts: '[{"name": "demo-solutions1-gha", "version": "1.${{ github.run_number }}.0", "repositoryName": "${{ github.repository }}"}]'
+  
+  test:
+    needs: build 
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4.5.0
+        with:
+          java-version: 17
+          distribution: oracle
+
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+          
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+          
+      - name: Analyze
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: | 
+          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Drevision=1.${{ github.run_number }}.0
+    
+      - name: ServiceNow DevOps Unit Test Results
+        uses: ServiceNow/servicenow-devops-test-report@v5.1.0
+        with:
+          instance-url: ${{ secrets.SN_URL }}
+          devops-integration-token: ${{ secrets.SN_TOKEN }}
+          tool-id: ${{ secrets.SN_TOOL_ID }}
+          context-github: ${{ toJSON(github) }}
+          job-name: ${{ github.job }}
+          xml-report-filename: target/surefire-reports/TEST-com.rapdev.maths.MathsTest.xml
+      
+      - name: ServiceNow DevOps Sonar
+        uses: ServiceNow/servicenow-devops-sonar@v5.1.0
+        with:
+          instance-url: ${{ secrets.SN_URL }}
+          devops-integration-token: ${{ secrets.SN_TOKEN }}
+          tool-id: ${{ secrets.SN_TOOL_ID }}
+          context-github: ${{ toJSON(github) }}
+          job-name: ${{ github.job }}
+          sonar-host-url: ${{ secrets.SONAR_HOST_URL }}
+          sonar-project-key: rapdev-io_solutions-1-gha
