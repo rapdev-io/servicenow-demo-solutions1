@@ -113,7 +113,7 @@ jobs:
 
   deploy:
     needs: package-registration
-    #environment: Production
+    environment: Production
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.2.2
