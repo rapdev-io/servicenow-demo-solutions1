@@ -98,7 +98,7 @@ jobs:
           context-github: ${{ toJSON(github) }}
           job-name: ${{ github.job }}
           artifacts: '[{"name": "demo-solutions1-gha", "version": "1.${{ github.run_number }}.0", "repositoryName": "${{ github.repository }}"}]'
-          package-name: 'demo-solutions1-package - ${{ github.run_number }}'
+          package-name: 'demo-solutions1-gha-package - ${{ github.run_number }}'
           
       - name: ServiceNow DevOps Change Automation
         uses: ServiceNow/servicenow-devops-change@v5.1.0
