@@ -7,5 +7,3 @@ test line 6!
 trending now
 New line here!
 And another line gites the dust
-
-
